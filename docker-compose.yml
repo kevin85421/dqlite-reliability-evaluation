@@ -7,7 +7,7 @@ services:
     networks:
         raft-cluster:
             ipv4_address: 172.24.2.1
-    command: dqlite-demo --api 172.24.2.1:8001 --db  172.24.2.1:9001 && tail -f /dev/null
+    command: bash -c "dqlite-demo --api 172.24.2.1:8001 --db 172.24.2.1:9001 && tail -f /dev/null"
     deploy:
       resources:
         limits:
