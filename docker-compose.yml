@@ -1,0 +1,52 @@
+version: '3'
+services:
+  raft1:
+    image: dqlite
+    ports:
+      - "9001:9001"
+    networks:
+        raft-cluster:
+            ipv4_address: 172.24.2.1
+    command: dqlite-demo --api 172.24.2.1:8001 --db  172.24.2.1:9001 && tail -f /dev/null
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1024M
+  raft2:
+    image: dqlite
+    ports:
+      - "9002:9002"
+    networks:
+        raft-cluster:
+            ipv4_address: 172.24.2.2
+    command: dqlite-demo --api 172.24.2.2:8002 --db 172.24.2.2:9002 --join 172.24.2.1:9001
+    depends_on:
+      - raft1
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1024M
+  raft3:
+    image: dqlite
+    ports:
+      - "9003:9003"
+    networks:
+        raft-cluster:
+            ipv4_address: 172.24.2.3 
+    command: dqlite-demo --api 172.24.2.3:8003 --db 172.24.2.3:9003 --join 172.24.2.1:9001
+    depends_on:
+      - raft1
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1024M
+networks:
+    raft-cluster:
+        driver: bridge
+        ipam:
+            driver: default
+            config:
+                - subnet: "172.24.2.0/16"
