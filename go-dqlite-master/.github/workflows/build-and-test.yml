@@ -1,0 +1,77 @@
+name: CI tests
+on:
+  - push
+  - pull_request
+
+jobs:
+  build-and-test:
+    strategy:
+      fail-fast: false
+      matrix:
+        go:
+          - 1.13.x
+          - 1.14.x
+          - 1.15.x
+          - 1.16.x
+        os:
+          - ubuntu-18.04
+          - ubuntu-20.04
+    runs-on: ${{ matrix.os }}
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Install Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: ${{ matrix.go }}
+
+    - name: Setup dependencies
+      run: |
+        sudo add-apt-repository ppa:dqlite/dev -y
+        sudo apt update
+        sudo apt install -y golint libsqlite3-dev libuv1-dev liblz4-dev libraft-dev libdqlite-dev
+        go get github.com/tsenart/deadcode
+        go get github.com/go-playground/overalls
+
+    - name: Build & Test
+      env:
+        CGO_LDFLAGS_ALLOW: "-Wl,-z,now"
+      run: |
+        go get -t -tags libsqlite3 ./...
+        go vet -tags libsqlite3 ./...
+        golint
+        deadcode
+        export GO_DQLITE_MULTITHREAD=1
+        overalls -project ${{ github.workspace }} -covermode=count -- -tags libsqlite3 -timeout 240s
+        VERBOSE=1 ./test/dqlite-demo.sh
+        VERBOSE=1 ./test/roles.sh
+        VERBOSE=1 ./test/recover.sh
+
+    - name: Coverage
+      uses: shogo82148/actions-goveralls@v1
+      with:
+        path-to-profile: overalls.coverprofile
+
+    - name: Benchmark
+      env:
+        CGO_LDFLAGS_ALLOW: "-Wl,-z,now"
+        GO_DQLITE_MULTITHREAD: 1
+      run: |
+        go install -tags libsqlite3 github.com/canonical/go-dqlite/cmd/dqlite-benchmark
+        dqlite-benchmark --db 127.0.0.1:9001 --driver --cluster 127.0.0.1:9001,127.0.0.1:9002,127.0.0.1:9003 --workload kvreadwrite &
+        masterpid=$!
+        dqlite-benchmark --db 127.0.0.1:9002 --join 127.0.0.1:9001 &
+        dqlite-benchmark --db 127.0.0.1:9003 --join 127.0.0.1:9001 &
+        wait $masterpid
+        echo "Write results:"
+        head -n 5 /tmp/dqlite-benchmark/127.0.0.1:9001/results/0-exec-*
+
+        echo ""
+        echo "Read results:"
+        head -n 5 /tmp/dqlite-benchmark/127.0.0.1:9001/results/0-query-*
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: dqlite-benchmark-${{ matrix.os }}-${{ matrix.go }}
+        path: /tmp/dqlite-benchmark/127.0.0.1:9001/results/*
