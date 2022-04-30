@@ -90,8 +90,9 @@ func (w *worker) getWork() (work, string, []interface{}) {
 		k, v := w.randNewKey(), w.randValue()
 		return exec, kvWriteSql, []interface{}{k, v}
 	case kvReaderWriter:
-		read := rand.Intn(2) == 0
-		if read && len(w.kvKeys) != 0 {
+		// read := rand.Intn(2) == 0
+		read := true
+		if read && len(w.kvKeys) >= 100 {
 			k, _ := w.randExistingKey()
 			return query, kvReadSql, []interface{}{k}
 		}
