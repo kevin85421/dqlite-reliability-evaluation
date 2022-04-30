@@ -56,3 +56,20 @@ docker-compose -f docker-compose-slow-cpu-leader.yml down
 
 # Step3: Check the experiment result in output/172.24.2.1:9001/results 
 ```
+
+## Slow CPU (Follower)
+I updated the CPU limit of a follower to 25% CPU utilization. The experiment result does not have a huge difference with baseline. Because the benchmark is running on the master node, the CPU utilization of the slow follower is always less than 1%. The experiment results store in the directory `experiment_result/slow-cpu-follower`.
+
+```sh
+# Step0: Make sure the mount directory is empty
+rm -r output
+mkdir output
+
+# Step1: Build a 3-node dqlite cluster and 3 containers for busybox. 
+docker-compose -f docker-compose-slow-cpu-follower.yml up
+
+# Step2: Wait until the experiment finishes. Close the cluster 
+docker-compose -f docker-compose-slow-cpu-follower.yml down
+
+# Step3: Check the experiment result in output/172.24.2.1:9001/results 
+```
