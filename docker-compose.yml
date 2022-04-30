@@ -7,12 +7,9 @@ services:
     networks:
         raft-cluster:
             ipv4_address: 172.24.2.1
-    command: bash -c "dqlite-demo --api 172.24.2.1:8001 --db 172.24.2.1:9001 && tail -f /dev/null"
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 1024M
+    command: dqlite-benchmark --db 172.24.2.1:9001 --driver --cluster 172.24.2.1:9001,172.24.2.2:9002,172.24.2.3:9003 --workload kvreadwrite --workers 16
+    volumes: 
+      - ./output:/tmp/dqlite-benchmark/
   raft2:
     image: dqlite
     ports:
@@ -20,14 +17,9 @@ services:
     networks:
         raft-cluster:
             ipv4_address: 172.24.2.2
-    command: dqlite-demo --api 172.24.2.2:8002 --db 172.24.2.2:9002 --join 172.24.2.1:9001
+    command: dqlite-benchmark --db 172.24.2.2:9002 --join 172.24.2.1:9001
     depends_on:
       - raft1
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 1024M
   raft3:
     image: dqlite
     ports:
@@ -35,14 +27,9 @@ services:
     networks:
         raft-cluster:
             ipv4_address: 172.24.2.3 
-    command: dqlite-demo --api 172.24.2.3:8003 --db 172.24.2.3:9003 --join 172.24.2.1:9001
+    command: dqlite-benchmark --db 172.24.2.3:9003 --join 172.24.2.1:9001
     depends_on:
       - raft1
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 1024M
 networks:
     raft-cluster:
         driver: bridge
