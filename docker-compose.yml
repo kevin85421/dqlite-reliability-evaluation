@@ -7,7 +7,7 @@ services:
     networks:
         raft-cluster:
             ipv4_address: 172.24.2.1
-    command: dqlite-benchmark --db 172.24.2.1:9001 --driver --cluster 172.24.2.1:9001,172.24.2.2:9002,172.24.2.3:9003 --workload kvreadwrite --workers 16
+    command: dqlite-benchmark --db 172.24.2.1:9001 --driver --cluster 172.24.2.1:9001,172.24.2.2:9002,172.24.2.3:9003 --workload kvreadwrite --workers 9
     volumes: 
       - ./output:/tmp/dqlite-benchmark/
   raft2:

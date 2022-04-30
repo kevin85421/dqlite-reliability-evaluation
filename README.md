@@ -40,8 +40,8 @@ docker-compose down
 # Fail-Injection Testing
 As shown in baseline experiment results, the baseline experiment with 9 threads achieves the best throughput. Hence, I decided to use 9 threads in this section.
 
-## Slow CPU
-I used three busybox containers, each one occupied at least 1 CPU, to waste CPU resource in `docker-compose-slow-cpu.yml`. The experiment results store in the directory `experiment_result/slow-cpu`.
+## Slow CPU (Leader)
+I used three busybox containers, each one occupied at least 1 CPU, to waste CPU resource in `docker-compose-slow-cpu-leader.yml`. The experiment results store in the directory `experiment_result/slow-cpu-leader`.
 
 ```sh
 # Step0: Make sure the mount directory is empty
@@ -49,10 +49,10 @@ rm -r output
 mkdir output
 
 # Step1: Build a 3-node dqlite cluster and 3 containers for busybox. 
-docker-compose -f docker-compose-slow-cpu.yml up
+docker-compose -f docker-compose-slow-cpu-leader.yml up
 
 # Step2: Wait until the experiment finishes. Close the cluster 
-docker-compose -f docker-compose-slow-cpu.yml down
+docker-compose -f docker-compose-slow-cpu-leader.yml down
 
 # Step3: Check the experiment result in output/172.24.2.1:9001/results 
 ```
