@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
    
-data = {'Baseline': 0.865786, 'Slow CPU': 6.672633, 'Mem Contention': 0.967998}
+data = {'Baseline': 562905 // 60, '100MB': 560358 // 60, '50MB': 497808 // 60, '30MB': 381969 // 60 }
 key_list = list(data.keys())
 throughput_list = list(data.values())
   
@@ -11,8 +11,6 @@ plt.bar(key_list, throughput_list, color ='maroon',
         width = 0.4)
  
 plt.xlabel("Type of Slowness")
-plt.ylabel("latency (ms)")
-plt.title("Fail Injection Testing (Leader)")
+plt.ylabel("throughput (GET requests / sec)")
+plt.title("Memory Contention (Leader)")
 plt.show()
-
-

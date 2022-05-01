@@ -34,26 +34,14 @@ services:
     image: dbgso/waste-cpu
     depends_on:
       - raft1
-    deploy:
-      resources:
-        reservations:
-          cpus: '1'
   busybox2:
     image: dbgso/waste-cpu
     depends_on:
       - raft1
-    deploy:
-      resources:
-        reservations:
-          cpus: '1'
   busybox3:
     image: dbgso/waste-cpu
     depends_on:
       - raft1
-    deploy:
-      resources:
-        reservations:
-          cpus: '1'
 networks:
     raft-cluster:
         driver: bridge
