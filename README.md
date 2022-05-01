@@ -107,6 +107,12 @@ docker-compose -f docker-compose-crash-follower.yml down
 ```
 
 ## Memory contention (Leader)
-
-
+The following command updates the memory limit to 50MB. The experiment result is stored in the directory `experiment_result/memory-leader-50mb`.
+```sh
+python3 memory_contention.py master 50
+```
 ## Memory contention (Follower)
+The following command updates the memory limit to 50MB. The experiment result is stored in the directory `experiment_result/memory-follower-50mb`.
+```sh
+python3 memory_contention.py follower1 50
+```
