@@ -118,8 +118,14 @@ python3 memory_contention.py follower1 50
 ```
 
 ## Experiment Results
-The following figure shows the experiment results of fail injection testing on leader node. Run `python3 tool/fail_inject_follower_leader_plot.py`
-![plot](./figures/leader_fail_injection_throughput.png)
+```sh
+python3 tool/fail_inject_leader_throughput_plot.py
+python3 tool/fail_inject_leader_latency_plot.py
+python3 tool/fail_inject_follower_throughput_plot.py
+python3 tool/fail_inject_follower_latency_plot.py
+```
 
-The following figure shows the experiment results of fail injection testing on leader node. Run `python3 tool/fail_inject_follower_throughput_plot.py`
+![plot](./figures/leader_fail_injection_throughput.png)
+![plot](./figures/leader_fail_injection_latency.png)
 ![plot](./figures/follower_fail_injection_throughput.png)
+![plot](./figures/follower_fail_injection_latency.png)
