@@ -73,3 +73,22 @@ docker-compose -f docker-compose-slow-cpu-follower.yml down
 
 # Step3: Check the experiment result in output/172.24.2.1:9001/results 
 ```
+
+## Crash (Leader)
+
+## Crash (Follower)
+The `docker-compose-crash-follower.yml` file defines a 3-node dqlite cluster, including raft1 (leader), raft2 (follower), and raft3 (follower). The follower raft2 will execute the script `crash-raft2.sh` which will launch a dqlite process, sleep a second, and kill the dqlite process. The experiment result is stored in the directory `experiment_result/crash-follower-raft2`.
+
+```sh
+# Step0: Make sure the mount directory is empty
+rm -r output
+mkdir output
+
+# Step1: Build a 3-node dqlite cluster and 3 containers for busybox. 
+docker-compose -f docker-compose-crash-follower.yml up
+
+# Step2: Wait until the experiment finishes. Close the cluster 
+docker-compose -f docker-compose-crash-follower.yml down
+
+# Step3: Check the experiment result in output/172.24.2.1:9001/results 
+```

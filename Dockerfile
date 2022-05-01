@@ -12,7 +12,9 @@ RUN wget -c https://golang.org/dl/go1.15.2.linux-amd64.tar.gz \
 
 ENV PATH="/root/go/bin:/usr/local/go/bin:${PATH}"
 
+ADD tool/crash-raft2.sh /crash-raft2.sh
 ADD go-dqlite-master /go-dqlite
+
 RUN export CGO_LDFLAGS_ALLOW="-Wl,-z,now" \
     && cd go-dqlite \ 
     && go build -tags libsqlite3 \ 
