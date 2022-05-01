@@ -116,3 +116,6 @@ The following command updates the memory limit to 50MB. The experiment result is
 ```sh
 python3 memory_contention.py follower1 50
 ```
+
+## Experiment Results
+![plot](./figures/leader_fail_injection.png)
